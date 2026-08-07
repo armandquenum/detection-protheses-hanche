@@ -1,4 +1,4 @@
-# Détection et localisation 3D de prothèses de hanche
+# Détection de prothèses de hanche dans l’imagerie TEP chez les patients atteints d’un cancer
 
 Détection automatique de prothèses de hanche sur topogrammes CT
 (SimpleITK + nnU-Net), avec reconstruction 3D par projections multi-angles
