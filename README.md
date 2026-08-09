@@ -49,6 +49,11 @@ Convertit un dossier de fichiers DICOM en NIfTI via Plastimatch.
 ```bash
 python scripts/run_preprocessing.py [options]
 ```
+<table>
+<tr><th style="width:200px">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th>
+  <th style="width:80px">Défaut</th><th style="width:80px">Description</th></tr>
+<tr><td><code>--dicoms_parent_folder</code></td><td><code>-d</code></td><td>str</td><td><code>DATA_RAW</code> (config.yaml)</td><td>Dossier racine contenant les DICOM à convertir</td></tr>
+</table>
 
 | Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Alias | Type | Défaut&nbsp; | Description |
 |---|---|---|---|---|
