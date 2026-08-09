@@ -51,8 +51,8 @@ python scripts/run_preprocessing.py [options]
 ```
 <table>
   <tr>
-    <th style="width:200px">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th>
-    <th style="width:80px">Défaut</th><th style="width:80px">Description</th>
+    <th style="width:500px">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th>
+    <th style="width:80px">Défaut</th><th style="width:400px">Description</th>
   </tr>
   <tr>
     <td><code>--dicoms_parent_folder</code></td><td><code>-d</code></td><td>str</td>
@@ -74,9 +74,9 @@ python scripts/run_preprocessing.py [options]
 </table>
 
 Exemple — reprise après interruption, 8 threads :
-\```bash
+```bash
 python scripts/run_preprocessing.py -d data/raw -n data/processed/niftis -e data/dicom_paths.npy -w 8
-\```
+```
 
 ### 2. Inférence
 
