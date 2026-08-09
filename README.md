@@ -52,7 +52,7 @@ python scripts/run_preprocessing.py [options]
 
 | Option | Alias | Type | Défaut | Description |
 |---|---|---|---|---|
-| `--dicoms_parent_folder` | `-d` | str | `DATA_RAW` (config.yaml) | Dossier racine contenant les DICOM à convertir |
+| `--&nbsp;dicoms_parent_folder` | `-d` | str | `DATA_RAW` (config.yaml) | Dossier racine contenant les DICOM à convertir |
 | `--niftis_parent_folder` | `-n` | str | `DATA_NIFTIS` (config.yaml) | Dossier racine de destination des NIfTI générés |
 | `--old_dicom_paths` | `-e` | str | `None` | Chemin vers un `.npy` de chemins DICOM déjà convertis, à exclure (reprise après interruption) |
 | `--n_workers` | `-w` | int | `4` | Nombre de threads parallèles pour la conversion (4-8 selon le CPU) |
