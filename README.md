@@ -37,7 +37,9 @@ installées automatiquement à partir de `pyproject.toml`.
 
 Dépendances externes non-Python (à installer séparément) : `plastimatch`
 (conversion DICOM → NIfTI), `nnU-Net` (v1 et v2, voir `MODELS/nnunet/` et
-`MODELS/nnunetv2/`).
+`MODELS/nnunetv2/`). Les poids entraînés ne sont pas versionnés dans ce 
+dépôt (données hospitalières), contactez 
+[Mathieu Rubeaux](mailto:mathieu.rubeaux@univ-rennes.fr) pour y accéder.
 
 ## Utilisation rapide
 ## Utilisation rapide
@@ -51,8 +53,8 @@ python scripts/run_preprocessing.py [options]
 ```
 <table>
   <tr>
-    <th style="width:500px">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th>
-    <th style="width:80px">Défaut</th><th style="width:400px">Description</th>
+    <th style="width:500">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th>
+    <th style="width:80px">Défaut</th><th style="width:0px">Description</th>
   </tr>
   <tr>
     <td><code>--dicoms_parent_folder</code></td><td><code>-d</code></td><td>str</td>
@@ -83,9 +85,9 @@ python scripts/run_preprocessing.py -d data/raw -n data/processed/niftis -e data
 Lance un modèle sur des images NIfTI et sort un résumé CSV avec une ligne
 par patient (présence de prothèse, latéralité, métadonnées DICOM).
 
-\```bash
+```bash
 python scripts/run_inference.py [options]
-\```
+```
 
 | Option | Alias | Type | Défaut | Description |
 |---|---|---|---|---|
@@ -97,9 +99,9 @@ python scripts/run_inference.py [options]
 | `--device` | `-d` | str | `cpu` | Device utilisé pour l'inférence : `cpu` ou `cuda` |
 
 Exemple — liste explicite d'images, nnU-Net v1, sur GPU :
-\```bash
+```bash
 python scripts/run_inference.py -i data/niftis/case1.nii.gz data/niftis/case2.nii.gz -m nnunet -d cuda
-\```
+```
 
 ### 3. Évaluation
 
@@ -107,13 +109,9 @@ python scripts/run_inference.py -i data/niftis/case1.nii.gz data/niftis/case2.ni
 test au format nnU-Net et sort un résumé CSV avec les métriques par
 patient.
 
-\```bash
+```bash
 python scripts/run_evaluation.py [options]
-\```
-<table>
-<tr><th style="width:200px">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th><th style="width:80px">Défaut</th><th style="width:80px">Description</th></tr>
-<tr><td><code>--input</code></td><td><code>-i</code></td><td>str</td><td>dataset nnU-Netv2 par défaut</td><td>Dossier racine contenant le dataset de test au format nnU-Net</td></tr>
-</table>
+```
 
 | Option | Alias | Type | Défaut | Description |
 |---|---|---|---|---|
@@ -125,9 +123,9 @@ python scripts/run_evaluation.py [options]
 | `--lancer_inference` / `--no-lancer_inference` | `-l` | bool | `True` | Lance l'inférence avant l'évaluation. Utiliser `--no-lancer_inference` si l'inférence a déjà été faite |
 
 Exemple — évaluer nnU-Net v1, fold 0 uniquement, sur GPU, sans relancer l'inférence :
-\```bash
+```bash
 python scripts/run_evaluation.py -m nnunet -f 0 -d cuda --no-lancer_inference
-\```
+```
 
 ## Résultats
 
