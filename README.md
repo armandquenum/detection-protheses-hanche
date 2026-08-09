@@ -6,13 +6,13 @@ et comparaison de méthodes (phase 2).
 
 ## Contexte
 
-Ce projet a été développé dans le cadre d'un stage de M1 au Centre Eugène
-Marquis. Il vise à détecter et segmenter automatiquement les prothèses de
-hanche sur une base non filtrée de 34 787 topogrammes CT (2021-2025,
-toutes régions anatomiques confondues, sans annotation disponible), en
-combinant une baseline SimpleITK et des modèles nnU-Net (2D), puis à
-reconstruire un masque 3D de la prothèse par projections multi-angles
-(phase 2).
+Ce projet a été développé dans le cadre d'un stage de M1 au Centre Eugène Marquis. Il vise 
+à détecter et segmenter automatiquement les prothèses de hanche sur une base non filtrée 
+de 34 787 topogrammes CT 2D (2021-2025, toutes régions anatomiques confondues, sans 
+annotation disponible), en combinant une baseline SimpleITK et des modèles nnU-Net (2D). 
+Pour une future segmentation 3D des CT patients, quatre méthodes de reconstruction d'un 
+masque 3D par projections multi-angles ont été implémentées et comparées sur le dataset 
+TotalSegmentator (phase 2).
 
 Pour l'architecture technique détaillée du projet (pipeline, formats de
 données, points ouverts pour la suite), voir [`ARCHITECTURE.md`](./ARCHITECTURE.md).
@@ -46,9 +46,9 @@ Dépendances externes non-Python (à installer séparément) : `plastimatch`
 
 Convertit un dossier de fichiers DICOM en NIfTI via Plastimatch.
 
-\```bash
+```bash
 python scripts/run_preprocessing.py [options]
-\```
+```
 
 | Option | Alias | Type | Défaut | Description |
 |---|---|---|---|---|
