@@ -49,16 +49,10 @@ Convertit un dossier de fichiers DICOM en NIfTI via Plastimatch.
 ```bash
 python scripts/run_preprocessing.py [options]
 ```
-<table>
-<tr><th style="width:200px">Option</th><th style="width:80px">Alias</th>
-  <th style="width:80px">Type</th><th style="width:80px">Défaut</th>
-  <th style="width:80px">Description</th></tr>
-<tr><td>`--dicoms_parent_folder`</td><td>`-d`</td><td>str</td><td>`DATA_RAW` (config.yaml)</td><td>Dossier racine contenant les DICOM à convertir</td></tr>
-</table>
 
-| Option&nbsp; | Alias | Type | Défaut | Description |
+| Option&nbsp; | Alias | Type | Défaut&nbsp; | Description |
 |---|---|---|---|---|
-| `--&nbsp;dicoms_parent_folder` | `-d` | str | `DATA_RAW` (config.yaml) | Dossier racine contenant les DICOM à convertir |
+| `--dicoms_parent_folder` | `-d` | str | `DATA_RAW` (config.yaml) | Dossier racine contenant les DICOM à convertir |
 | `--niftis_parent_folder` | `-n` | str | `DATA_NIFTIS` (config.yaml) | Dossier racine de destination des NIfTI générés |
 | `--old_dicom_paths` | `-e` | str | `None` | Chemin vers un `.npy` de chemins DICOM déjà convertis, à exclure (reprise après interruption) |
 | `--n_workers` | `-w` | int | `4` | Nombre de threads parallèles pour la conversion (4-8 selon le CPU) |
