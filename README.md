@@ -55,7 +55,8 @@ python scripts/run_preprocessing.py [options]
   <th style="width:80px">Description</th></tr>
 <tr><td>`--dicoms_parent_folder`</td><td>`-d`</td><td>str</td><td>`DATA_RAW` (config.yaml)</td><td>Dossier racine contenant les DICOM à convertir</td></tr>
 </table>
-| Option | Alias | Type | Défaut | Description |
+
+| Option&nbsp; | Alias | Type | Défaut | Description |
 |---|---|---|---|---|
 | `--&nbsp;dicoms_parent_folder` | `-d` | str | `DATA_RAW` (config.yaml) | Dossier racine contenant les DICOM à convertir |
 | `--niftis_parent_folder` | `-n` | str | `DATA_NIFTIS` (config.yaml) | Dossier racine de destination des NIfTI générés |
