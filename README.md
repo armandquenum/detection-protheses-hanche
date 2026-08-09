@@ -50,7 +50,7 @@ Convertit un dossier de fichiers DICOM en NIfTI via Plastimatch.
 python scripts/run_preprocessing.py [options]
 ```
 
-| Option&nbsp; | Alias | Type | Défaut&nbsp; | Description |
+| Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Alias | Type | Défaut&nbsp; | Description |
 |---|---|---|---|---|
 | `--dicoms_parent_folder` | `-d` | str | `DATA_RAW` (config.yaml) | Dossier racine contenant les DICOM à convertir |
 | `--niftis_parent_folder` | `-n` | str | `DATA_NIFTIS` (config.yaml) | Dossier racine de destination des NIfTI générés |
