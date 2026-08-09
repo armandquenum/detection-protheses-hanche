@@ -94,6 +94,10 @@ patient.
 \```bash
 python scripts/run_evaluation.py [options]
 \```
+<table>
+<tr><th style="width:200px">Option</th><th style="width:80px">Alias</th><th style="width:80px">Type</th><th style="width:80px">Défaut</th><th style="width:80px">Description</th></tr>
+<tr><td><code>--input</code></td><td><code>-i</code></td><td>str</td><td>dataset nnU-Netv2 par défaut</td><td>Dossier racine contenant le dataset de test au format nnU-Net</td></tr>
+</table>
 
 | Option | Alias | Type | Défaut | Description |
 |---|---|---|---|---|
