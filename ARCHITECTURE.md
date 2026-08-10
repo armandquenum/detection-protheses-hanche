@@ -2,7 +2,7 @@
 
 Document de passation. Objectif : permettre à la personne qui reprend le
 projet de comprendre le pipeline, les formats de données, les pièges déjà
-corrigés, et ce qu'il reste à construire — sans avoir à relire tout
+corrigés, et ce qu'il reste à construire, sans avoir à relire tout
 l'historique de développement.
 
 ---
@@ -18,7 +18,7 @@ DICOM (données brutes)
     → dicom_paths.npy (index des chemins DICOM, sous DATA/)
     │
     ▼
-[2] pipeline_annotation.py : generer_annotations_candidates(mode='annotation')
+[2] pipeline_annotation.py : generer_annotations_candidates(mode='annotation', merge_into_annotations=True)
     → masques candidats (SimpleITK) + détection orientation (face/profil)
     → annotations.json  (à corriger manuellement via Napari)
     │
@@ -31,14 +31,18 @@ DICOM (données brutes)
 [4] Entraînement nnU-Net (train.py, hors périmètre de cette doc)
     │
     ▼
-[5] Inférence / évaluation — 3 chemins possibles, même format de sortie :
+[5] Inférence / évaluation — 4 chemins possibles, même format de sortie :
     ├── predictor.py : predire_images_multiple(mode='infer')
     │     → tous les patients, hors évaluation
     ├── predictor.py : predire_images_multiple(mode='eval')
     │     → nnU-Net (v1/v2) sur le jeu de test
-    └── pipeline_annotation.py : generer_annotations_candidates(mode='eval')
-          → baseline SimpleITK sur le jeu de test
-    Les 3 écrivent segmentations.json dans io.dossier_predictions(model, ...)
+    ├── pipeline_annotation.py : generer_annotations_candidates(mode='eval')
+    │     → baseline SimpleITK sur le jeu de test
+    └── pipeline_annotation.py : generer_annotations_candidates(mode='annotation', merge_into_annotations=False)
+          → baseline SimpleITK ad-hoc (ex. scripts/run_inference.py -m sitk),
+            sur des images arbitraires hors jeu de test
+    Les 4 écrivent segmentations.json (même schéma de champs) dans
+    output_dir/dossier_predictions selon le chemin
     │
     ▼
 [6] evaluator.py : evaluer_dataset_test()
@@ -152,16 +156,11 @@ possible sans code supplémentaire.
   }
 }
 ```
-⚠️ `raw_id` (lien vers l'ID patient brut) a été **volontairement retiré**
-des entrées de test — décision prise en cours de projet car jugée inutile
-pour l'évaluation quantitative. Conséquence : **il n'existe plus aucun
-moyen de retrouver le DICOM d'origine d'un cas de test une fois le
-dataset nnU-Net construit.** Si un débogage a posteriori sur un cas de
-test devient nécessaire (comprendre pourquoi tel cas donne un résultat
-aberrant), il faudra recouper `annotations.json` manuellement par nom de
-fichier NIfTI.
 
-### `segmentations.json` (sortie commune du mode `eval`, tous modèles)
+### `segmentations.json` (sortie commune du mode `eval`, tous modèles )
+Ce format est également celui produit par
+`generer_annotations_candidates(mode='annotation', merge_into_annotations=False)`
+lors d'un appel ad-hoc (ex. `scripts/run_inference.py -m sitk`).
 ```json
 {
   "case_0001_Ts": {
@@ -194,14 +193,38 @@ dû être protégés explicitement contre ce piège (voir §3).
 
 ## 4. Pièges déjà corrigés (ne pas réintroduire)
 
-Le code a été audité et plusieurs bugs silencieux corrigés (résolution
-DICOM dispersée et incohérente, valeurs indéterminées `est_profil=None`/
-`lateralite=-1` traitées comme fausses/nulles sans garde-fou, ordre des
-axes spacing/tableau numpy inversé dans les calculs de distance,
-duplication de métriques et de dossiers de sortie). Le détail de chaque
-correction est dans l'historique git — **les principes à respecter pour
-la suite sont regroupés en §6**, plus utiles à connaître que l'historique
-lui-même pour continuer le travail.
+## 4. Pièges déjà corrigés (ne pas réintroduire)
+
+Le code a été audité et plusieurs bugs silencieux corrigés :
+
+- résolution DICOM dispersée et incohérente ;
+
+- valeurs indéterminées `est_profil=None`/`lateralite=-1` traitées comme
+
+  fausses/nulles sans garde-fou ;
+
+- ordre des axes spacing/tableau numpy inversé dans les calculs de
+
+  distance ;
+
+- duplication de métriques et de dossiers de sortie ;
+
+- écriture silencieuse dans `annotations.json` lors d'appels ad-hoc à
+
+  `generer_annotations_candidates` (corrigé via le paramètre
+
+  `merge_into_annotations` — voir §5.1 / docstring de la fonction) ;
+
+- dans `run_inference.py` : détection de fichier via `path.is_file` sans
+
+  parenthèses (référence de méthode toujours vraie plutôt qu'un appel,
+
+  incluait silencieusement des fichiers inexistants ou non-NIfTI) ;
+
+Ces corrections ont été faites dans le code actuel, mais l'historique
+Git de ce dépôt ne remonte pas jusqu'à elles . **Les principes à respecter pour la suite sont
+regroupés en §6** : c'est la référence à consulter pour éviter de
+réintroduire ces bugs.
 
 ---
 
@@ -273,6 +296,11 @@ reconstruction. Ce câblage est à écrire.
   toujours passer par `io.resoudre_dicom_path`/`resoudre_dicom_brut`.
 - **Ne jamais dupliquer** une métrique (Dice/IoU/Hausdorff) — tout doit
   importer depuis `src.evaluation.metrics`.
+- **Ne jamais appeler** `generer_annotations_candidates` avec
+  `merge_into_annotations=True` en dehors de l'étape [2] du pipeline
+  (annotation officielle avant validation Napari) — ce paramètre doit
+  toujours être passé explicitement, jamais laissé au défaut, pour tout
+  script ou appel exploratoire.
 - **Toute nouvelle valeur "indéterminée"** (comme `est_profil=None`) doit
   être traitée comme un état explicite distinct, jamais implicitement
   convertie en `False`/`0`/`-1` sans garde-fou (`is None`, jamais `== None`
