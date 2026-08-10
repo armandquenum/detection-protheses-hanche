@@ -1,0 +1,15 @@
+# config.yaml
+paths:
+  data:       "data"
+  data_raw:       "data/raw"
+  data_processed: "data/processed"
+  data_niftis:    "data/processed/niftis"
+  annotations:    "data/annotations"
+  results:        "reports/figures"
+  models:         "models"
+  nnunet:         "nnunet"
+  nnunetv2:         "nnunetv2"
+  nnunet_dataset:   "NNUNET/nnUNet_raw/Dataset001_Protheses"
+  nnunetv2_dataset:   "NNUNET_V2/nnUNet_raw/Dataset001_Protheses"
+  figures:       "figures"
+  data_nnunet_mask:  "data/nnunet_mask"

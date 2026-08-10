@@ -1,0 +1,21 @@
+# pyproject.toml
+[build-system]
+requires      = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name            = "detection-protheses-hanche"
+version         = "0.1.0"
+requires-python = ">=3.10"
+dependencies    = [
+    "SimpleITK",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "tqdm",
+    "pyyaml",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]      # cherche les packages depuis la racine
+include = ["src*"] # inclut src/ et tous ses sous-modules
