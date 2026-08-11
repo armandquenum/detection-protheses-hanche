@@ -4,7 +4,7 @@
 import logging
 import SimpleITK as sitk
 import numpy as np
-from ..utils.image_info import get_descript_img
+from src.utils.image_info import get_descript_img
 
 logger = logging.getLogger(__name__)
 
