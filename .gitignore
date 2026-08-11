@@ -1,0 +1,29 @@
+# Données et modèles (jamais versionnés)
+data/*
+models/*
+*.nii.gz
+*.dcm
+*.npy
+*.json
+*.pth
+*.pt
+*.onnx
+*.pkl
+reports/*
+figures/
+
+# Secrets
+.env
+*.token
+*_token.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+dist/
+venv/
+
+# Notebooks — sécurité supplémentaire même avec nbstripout actif
+notebooks/**/*.ipynb_checkpoints/
