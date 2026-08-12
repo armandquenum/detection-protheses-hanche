@@ -61,9 +61,12 @@ localisation3d/bounding_box3d.py
     ▼  [MAILLON MANQUANT — voir §5.1]
     │
 reconstruction3d/roi_projection.py + reconstruction_methods.py
-    → projection multi-angles (my_projeter) sur ROI 3D
-    → 4 méthodes de reconstruction comparées (tube_plein, argmax_filtre,
-      seuil_hu, space_carving) sur le dataset TotalSegmentator
+    → projection multi-angles (roi_projection.projeter) sur ROI 3D —
+      roi_projection.py couvre uniquement 3D->2D et sa préparation
+    → rétroprojection, reconstruction 3D et 4 méthodes comparées
+      (tube_plein, argmax_filtre, seuil_hu, space_carving) sur le
+      dataset TotalSegmentator — tout ce qui va de 2D->3D vit dans
+      reconstruction_methods.py (reconstruct_3d, comparer_methodes)
     → métriques (dice_score/iou_score/hausdorff_distance, centralisées
       dans src.evaluation.metrics)
 ```
@@ -79,25 +82,31 @@ Les modèles nnU-Net du projet sont entraînés sur des **topogrammes 2D**
 (images de type radiographie, face/profil), pas sur des volumes CT 3D
 complets. Pour obtenir malgré tout un masque 3D de la prothèse, l'approche
 retenue est une **reconstruction par projections multi-angles**, plutôt
-qu'un modèle de segmentation 3D natif :
+qu'un modèle de segmentation 3D natif. La projection (3D→2D) et la
+reconstruction (2D→3D) sont dans deux fichiers séparés :
+`roi_projection.py` (projection uniquement) et
+`reconstruction_methods.py` (tout le reste).
 
-1. **Projection** (`roi_projection.my_projeter`) : depuis un volume CT 3D
+1. **Projection** (`roi_projection.projeter`) : depuis un volume CT 3D
    (ROI extraite), on génère des projections 2D à plusieurs angles
    (ex. 0°, 30°, 60°... — équivalent numérique d'un topogramme pris sous
    différents angles).
 2. **Segmentation 2D** : chaque projection est segmentée par le modèle
    nnU-Net (2D), comme un topogramme normal.
-3. **Rétroprojection** (`roi_projection.retroprojeter_masque`) : chaque
-   masque 2D est "extrudé" en arrière dans l'espace 3D le long de l'angle
-   de projection correspondant.
-4. **Reconstruction 3D** : les rétroprojections de tous les angles sont
+3. **Rétroprojection** (`reconstruction_methods.retroprojeter_masque`) :
+   chaque masque 2D est "extrudé" en arrière dans l'espace 3D le long de
+   l'angle de projection correspondant.
+4. **Reconstruction 3D** (`reconstruction_methods.reconstruct_3d`,
+   paramètre `method`) : les rétroprojections de tous les angles sont
    combinées pour reconstituer un volume 3D. **4 méthodes ont été
-   comparées** (`reconstruction_methods.py`) sur le dataset TotalSegmentator
-   (qui fournit une vérité terrain 3D) :
+   comparées** (`comparer_methodes`, qui délègue à `reconstruct_3d` pour
+   chacune) sur le dataset TotalSegmentator (qui fournit une vérité
+   terrain 3D) :
    - **`tube_plein`** — extrusion uniforme sur toute la profondeur
      (référence / Visual Hull classique) : rapide, mais surestime le
      volume (garde tout ce qui est dans la silhouette 2D, sans filtrer
-     par intensité).
+     par intensité). Seule des 4 méthodes purement géométrique — aucun
+     besoin de l'image CT réelle.
    - **`argmax_filtre`** — ne garde, le long de chaque rayon de
      projection, que les indices dont l'intensité HU est proche du
      maximum local (fenêtre `alpha`).
@@ -110,9 +119,17 @@ qu'un modèle de segmentation 3D natif :
      du seuil métal) : c'est la méthode la plus proche d'une vraie
      sculpture par cohérence multi-vues, et celle qui a le moins
      tendance à surestimer le volume par rapport à `tube_plein`.
-   Les 4 méthodes sont comparées par Dice, IoU et Hausdorff 95 (voir
-   `comparer_methodes`) — **consultez les résultats produits par cette
-   fonction pour savoir laquelle a été retenue en pratique.**
+   Les 4 méthodes sont comparées par Dice, IoU et Hausdorff 95 —
+   **consultez les résultats produits par `comparer_methodes` pour savoir
+   laquelle a été retenue en pratique**, puis appelez
+   `reconstruct_3d(..., method="<méthode retenue>")` directement pour la
+   reconstruction "de production" (plus besoin de repasser par la
+   comparaison une fois le choix fait). ⚠️ `reconstruct_3d` utilise
+   l'image de référence passée en paramètre à la fois pour la géométrie
+   et, dès que `method != "tube_plein"`, comme source d'intensités HU —
+   passer la vraie image CT, pas un masque, sous peine d'échec silencieux
+   (voir `evaluate_reconstruction_on_dataset` dans le même fichier pour
+   l'erreur explicite correspondante).
 
 ### Rôle du second modèle nnU-Net (`nnunetv2`)
 
@@ -190,8 +207,6 @@ indexer un tableau avec `-1` boucle silencieusement sur le dernier
 dû être protégés explicitement contre ce piège (voir §3).
 
 ---
-
-## 4. Pièges déjà corrigés (ne pas réintroduire)
 
 ## 4. Pièges déjà corrigés (ne pas réintroduire)
 
